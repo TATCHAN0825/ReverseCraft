@@ -5,28 +5,23 @@ namespace tatchan\ReverseCraft;
 
 
 use pocketmine\form\Form;
-use pocketmine\inventory\CraftingRecipe;
-use pocketmine\item\Item;
+use pocketmine\inventory\ShapedRecipe;
+use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\Player;
 
 class selectForm implements Form
 {
-
-
-    /** @var CraftingRecipe[] */
+    /** @var ShapedRecipe[]|ShapelessRecipe[] 本当は(ShapedRecipe|ShapelessRecipe)[] */
     private $recipes;
-    /** @var Item */
-    private $item;
 
-    public function __construct(array $recipes, Item $item) {
+    public function __construct(array $recipes) {
         $this->recipes = array_values($recipes);
-        $this->item = $item;
     }
 
     public function handleResponse(Player $player, $data): void {
         if ($data === null) return;
 
-        $player->sendForm(new CountForm($this->recipes[$data], $this->item));
+        $player->sendForm(new CountForm($this->recipes[$data], $player));
     }
 
     public function jsonSerialize() {

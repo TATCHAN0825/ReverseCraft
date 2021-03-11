@@ -6,6 +6,8 @@ namespace tatchan\ReverseCraft;
 use pocketmine\block\BlockIds;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\inventory\ShapedRecipe;
+use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener
@@ -19,11 +21,13 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) return;
         if ($event->getBlock()->getId() !== BlockIds::CRAFTING_TABLE) return;
         if (!$event->getPlayer()->isSneaking()) return;
-        $inv = $event->getPlayer()->getInventory();
         $recipes = [];
+        $item = $event->getPlayer()->getInventory()->getItemInHand();
 
-        foreach ($this->getServer()->getCraftingManager()->matchRecipeByOutputs([$event->getPlayer()->getInventory()->getItemInHand()]) as $recipe) {
-
+        foreach ($this->getServer()->getCraftingManager()->matchRecipeByOutputs([$item]) as $recipe) {
+            if (!($recipe instanceof ShapedRecipe or $recipe instanceof ShapelessRecipe)) {
+                continue;
+            }
             foreach ($recipe->getIngredientList() as $item) {
                 if ($item->getName() == "Unknown") {
                     continue 2;
@@ -39,6 +43,6 @@ class Main extends PluginBase implements Listener
             return;
         }
 
-        $event->getPlayer()->sendForm(new selectForm($recipes, $inv->getItemInHand()));
+        $event->getPlayer()->sendForm(new selectForm($recipes));
     }
 }
