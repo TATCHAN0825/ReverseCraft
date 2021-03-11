@@ -33,9 +33,7 @@ class selectForm implements Form
         $buttons = [];
         foreach ($this->recipes as $recipe) {
             $buttons[] = [
-                "text" => implode(",", array_map(function (Item $item): string {
-                    return $item->getName();
-                }, $recipe->getIngredientList()))
+                "text" => implode(",", Utils::allignItems($recipe->getIngredientList())),
             ];
         }
         return [
