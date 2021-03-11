@@ -22,9 +22,8 @@ class Main extends PluginBase implements Listener
         if ($event->getBlock()->getId() !== BlockIds::CRAFTING_TABLE) return;
         if (!$event->getPlayer()->isSneaking()) return;
         $recipes = [];
-        $item = $event->getPlayer()->getInventory()->getItemInHand();
 
-        foreach ($this->getServer()->getCraftingManager()->matchRecipeByOutputs([$item]) as $recipe) {
+        foreach ($this->getServer()->getCraftingManager()->matchRecipeByOutputs([$event->getPlayer()->getInventory()->getItemInHand()]) as $recipe) {
             if (!($recipe instanceof ShapedRecipe or $recipe instanceof ShapelessRecipe)) {
                 continue;
             }
